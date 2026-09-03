@@ -1,0 +1,448 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+
+backend:
+  name: github
+  repo: AnrevaSolutionOrg/anreva-website
+  branch: main
+  # Deploy Sveltia CMS Authenticator (Cloudflare Workers) and set its URL here to enable
+  # "Sign in with GitHub". Until then, editors use "Sign in with Token" (personal access token).
+  # base_url: https://REPLACE-WITH-AUTHENTICATOR.workers.dev
+
+media_folder: /public/media
+public_folder: /media
+
+i18n:
+  structure: multiple_folders
+  locales: [cs]
+  default_locale: cs
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: clients
+    label: Klienti
+    label_singular: Klient
+    description: Klienti a partnerské organizace. Slug souboru se používá v URL /klienti/<slug>.
+    folder: /content/clients
+    extension: json
+    format: json
+    create: true
+    i18n: true
+    identifier_field: name
+    sortable_fields: [order, name]
+    summary: '{{order}} — {{name}}'
+    fields:
+      - { label: Název, name: name, widget: string, i18n: true }
+      - { label: Pořadí, name: order, widget: number, value_type: int, i18n: duplicate }
+      - { label: Logo barevné, name: logoColor, widget: image, i18n: duplicate }
+      - { label: Logo černobílé, name: logoMono, widget: image, i18n: duplicate }
+      - { label: Popis, name: description, widget: text, i18n: true }
+      - label: Zobrazit na hlavní stránce
+        name: featuredOnHome
+        widget: boolean
+        default: true
+        i18n: duplicate
+
+  - name: projects
+    label: Projekty
+    label_singular: Projekt
+    description: Projekty klientů. Vyplněná sekce Detailní stránka vytvoří klikatelný detail projektu.
+    folder: /content/projects
+    extension: json
+    format: json
+    create: true
+    i18n: true
+    identifier_field: title
+    sortable_fields: [order, title]
+    summary: '{{order}} — {{title}}'
+    fields:
+      - { label: Název, name: title, widget: string, i18n: true }
+      - label: Klient
+        name: client
+        widget: relation
+        collection: clients
+        value_field: '{{slug}}'
+        search_fields: [name]
+        display_fields: [name]
+        required: false
+        i18n: duplicate
+      - { label: Kategorie, name: category, widget: string, i18n: true }
+      - { label: Krátký popis, name: summary, widget: text, i18n: true }
+      - { label: Pořadí, name: order, widget: number, value_type: int, i18n: duplicate }
+      - label: Zobrazit na hlavní stránce
+        name: featuredOnHome
+        widget: boolean
+        default: false
+        i18n: duplicate
+      - label: Obrázek karty
+        name: image
+        widget: image
+        required: false
+        hint: Vyplňte pouze u projektů bez klienta. Jinak se použije logo klienta.
+        i18n: duplicate
+      - { label: Alt text obrázku, name: imageAlt, widget: string, required: false, i18n: true }
+      - label: Detailní stránka
+        name: detail
+        widget: object
+        required: false
+        collapsed: true
+        i18n: true
+        fields:
+          - { label: Titulek detailu, name: headline, widget: string, required: false, i18n: true }
+          - { label: Úvodní odstavec, name: lead, widget: text, i18n: true }
+          - label: Fakta
+            name: facts
+            widget: list
+            required: false
+            i18n: true
+            fields:
+              - { label: Popisek, name: label, widget: string, i18n: true }
+              - { label: Hodnota, name: value, widget: string, i18n: true }
+          - label: Sekce
+            name: sections
+            widget: list
+            required: false
+            i18n: true
+            fields:
+              - { label: Nadpis, name: heading, widget: string, i18n: true }
+              - label: Odstavce
+                name: paragraphs
+                widget: list
+                required: false
+                i18n: true
+                field: { label: Odstavec, name: paragraph, widget: text, i18n: true }
+              - label: Body seznamu
+                name: items
+                widget: list
+                required: false
+                i18n: true
+                field: { label: Bod, name: item, widget: text, i18n: true }
+          - label: Ukázky výstupů
+            name: outputs
+            widget: list
+            required: false
+            i18n: true
+            fields:
+              - { label: Obrázek, name: image, widget: image, i18n: duplicate }
+              - { label: Alt text, name: alt, widget: string, i18n: true }
+              - { label: Popisek, name: caption, widget: text, i18n: true }
+          - label: Odkazy
+            name: links
+            widget: list
+            required: false
+            i18n: true
+            fields:
+              - { label: Text odkazu, name: label, widget: string, i18n: true }
+              - { label: URL, name: url, widget: string, i18n: duplicate }
+
+  - name: webinars
+    label: Webináře
+    label_singular: Webinář
+    description: Záznamy webinářů — YouTube video nebo externí odkaz, s volitelnými soubory ke stažení.
+    folder: /content/media/webinars
+    extension: json
+    format: json
+    create: true
+    i18n: true
+    identifier_field: title
+    sortable_fields: [order, title]
+    summary: '{{order}} — {{title}}'
+    fields:
+      - { name: kind, widget: hidden, default: webinar, i18n: duplicate }
+      - { label: Název, name: title, widget: string, i18n: true }
+      - { label: Označení, name: label, widget: string, default: Záznam z webináře, i18n: true }
+      - { label: Krátký popis, name: summary, widget: text, i18n: true }
+      - label: Záznam
+        name: source
+        widget: object
+        i18n: true
+        types:
+          - name: youtube
+            label: YouTube video
+            fields:
+              - label: YouTube ID
+                name: youtubeId
+                widget: string
+                hint: Pouze ID videa, například SqwsvMjP4ns.
+                i18n: duplicate
+          - name: link
+            label: Externí odkaz
+            fields:
+              - { label: URL, name: url, widget: string, i18n: duplicate }
+              - label: Náhledový obrázek
+                name: image
+                widget: image
+                required: false
+                i18n: duplicate
+      - { label: Pořadí, name: order, widget: number, value_type: int, i18n: duplicate }
+      - label: Zobrazit na hlavní stránce
+        name: featuredOnHome
+        widget: boolean
+        default: true
+        i18n: duplicate
+      - label: Soubory ke stažení
+        name: downloads
+        widget: list
+        required: false
+        i18n: true
+        fields:
+          - { label: Text odkazu, name: label, widget: string, i18n: true }
+          - { label: URL, name: url, widget: string, i18n: duplicate }
+
+  - name: press
+    label: Mediální výstupy
+    label_singular: Mediální výstup
+    description: Články, rozhovory a televizní výstupy. Bez URL se karta zobrazí bez odkazu.
+    folder: /content/media/press
+    extension: json
+    format: json
+    create: true
+    i18n: true
+    identifier_field: title
+    sortable_fields: [order, title]
+    summary: '{{order}} — {{title}}'
+    fields:
+      - { name: kind, widget: hidden, default: press, i18n: duplicate }
+      - { label: Název, name: title, widget: string, i18n: true }
+      - { label: Zdroj, name: source, widget: string, i18n: true }
+      - { label: Krátký popis, name: summary, widget: text, i18n: true }
+      - { label: Náhledový obrázek, name: image, widget: image, i18n: duplicate }
+      - { label: URL, name: url, widget: string, required: false, i18n: duplicate }
+      - { label: Pořadí, name: order, widget: number, value_type: int, i18n: duplicate }
+      - label: Zobrazit na hlavní stránce
+        name: featuredOnHome
+        widget: boolean
+        default: false
+        i18n: duplicate
+
+  - name: team
+    label: Tým
+    label_singular: Člen týmu
+    description: Fotky a medailonky členů týmu.
+    folder: /content/team
+    extension: json
+    format: json
+    create: true
+    i18n: true
+    identifier_field: name
+    sortable_fields: [order, name]
+    summary: '{{order}} — {{name}}'
+    fields:
+      - { label: Jméno, name: name, widget: string, i18n: true }
+      - { label: Pozice, name: role, widget: string, i18n: true }
+      - { label: Pořadí, name: order, widget: number, value_type: int, i18n: duplicate }
+      - { label: Fotka, name: photo, widget: image, i18n: duplicate }
+      - { label: E-mail, name: email, widget: string, required: false, i18n: duplicate }
+      - { label: LinkedIn, name: linkedin, widget: string, required: false, i18n: duplicate }
+      - { label: Medailonek, name: bio, widget: text, i18n: true }
+
+  - name: vacancies
+    label: Volné pozice
+    label_singular: Volná pozice
+    description: Dokud tu není žádná pozice, stránka Volná místa zobrazuje připravený prázdný stav.
+    folder: /content/vacancies
+    extension: json
+    format: json
+    create: true
+    i18n: true
+    identifier_field: title
+    sortable_fields: [order, title]
+    summary: '{{order}} — {{title}}'
+    fields:
+      - { label: Název pozice, name: title, widget: string, i18n: true }
+      - { label: Forma spolupráce, name: engagement, widget: string, i18n: true }
+      - { label: Krátký popis, name: summary, widget: text, i18n: true }
+      - { label: Pořadí, name: order, widget: number, value_type: int, i18n: duplicate }
+      - label: Odkaz na detail
+        name: detailUrl
+        widget: string
+        required: false
+        i18n: duplicate
+
+  - name: pages
+    label: Stránky
+    description: Texty jednotlivých stránek a sekcí.
+    i18n: true
+    files:
+      - name: home
+        label: Hlavní stránka
+        file: /content/pages/{{locale}}/home.json
+        i18n: true
+        fields:
+          - label: Kdo jsme
+            name: about
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+              - { label: Titulek, name: title, widget: string, i18n: true }
+              - label: Odstavce
+                name: paragraphs
+                widget: list
+                i18n: true
+                field: { label: Odstavec, name: paragraph, widget: text, i18n: true }
+              - { label: Titulek služeb, name: servicesTitle, widget: string, i18n: true }
+              - label: Služby
+                name: services
+                widget: list
+                i18n: true
+                field: { label: Služba, name: service, widget: string, i18n: true }
+          - label: Klienti
+            name: clients
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+              - { label: Titulek, name: title, widget: string, i18n: true }
+              - { label: Text odkazu, name: linkLabel, widget: string, i18n: true }
+          - label: Partnerský projekt
+            name: partner
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+              - { label: Titulek, name: title, widget: string, i18n: true }
+              - { label: Text odkazu, name: linkLabel, widget: string, i18n: true }
+              - { label: URL, name: url, widget: string, i18n: duplicate }
+          - label: Projekty
+            name: projects
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+              - { label: Titulek, name: title, widget: string, i18n: true }
+              - { label: Text odkazu, name: linkLabel, widget: string, i18n: true }
+          - label: Média
+            name: media
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+              - { label: Titulek, name: title, widget: string, i18n: true }
+              - { label: Text odkazu, name: linkLabel, widget: string, i18n: true }
+          - label: Tým
+            name: team
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+              - { label: Titulek, name: title, widget: string, i18n: true }
+              - { label: Odstavec, name: paragraph, widget: text, i18n: true }
+              - label: Text zástupného rámu
+                name: photoPlaceholder
+                widget: string
+                hint: Zobrazí se, dokud není nahraná společná fotka týmu.
+                i18n: true
+              - { label: Popisek fotky, name: photoCaption, widget: string, i18n: true }
+              - {
+                  label: Společná fotka,
+                  name: photo,
+                  widget: image,
+                  required: false,
+                  i18n: duplicate,
+                }
+              - {
+                  label: Alt text fotky,
+                  name: photoAlt,
+                  widget: string,
+                  required: false,
+                  i18n: true,
+                }
+          - label: Volná místa (upoutávka)
+            name: careers
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+              - { label: Titulek bez volných pozic, name: title, widget: string, i18n: true }
+              - { label: Titulek s volnými pozicemi, name: titleOpen, widget: string, i18n: true }
+              - { label: Odstavec, name: paragraph, widget: text, i18n: true }
+
+      - name: clients
+        label: Stránka Klienti
+        file: /content/pages/{{locale}}/clients.json
+        i18n: true
+        fields:
+          - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+          - { label: Titulek, name: title, widget: string, i18n: true }
+          - { label: Úvodní text, name: lead, widget: text, i18n: true }
+
+      - name: projects
+        label: Stránka Projekty
+        file: /content/pages/{{locale}}/projects.json
+        i18n: true
+        fields:
+          - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+          - { label: Titulek, name: title, widget: string, i18n: true }
+          - { label: Úvodní text, name: lead, widget: text, i18n: true }
+
+      - name: media
+        label: Stránka Média
+        file: /content/pages/{{locale}}/media.json
+        i18n: true
+        fields:
+          - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+          - { label: Titulek, name: title, widget: string, i18n: true }
+          - { label: Úvodní text, name: lead, widget: text, i18n: true }
+          - { label: Nadtitulek webinářů, name: webinarsKicker, widget: string, i18n: true }
+          - { label: Titulek webinářů, name: webinarsTitle, widget: string, i18n: true }
+
+      - name: careers
+        label: Stránka Volná místa
+        file: /content/pages/{{locale}}/careers.json
+        i18n: true
+        fields:
+          - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+          - { label: Titulek bez volných pozic, name: title, widget: string, i18n: true }
+          - { label: Titulek s volnými pozicemi, name: titleOpen, widget: string, i18n: true }
+          - { label: Úvodní text, name: lead, widget: text, i18n: true }
+          - label: Zobrazit v hlavní navigaci
+            name: showInNavigation
+            widget: boolean
+            default: true
+            hint: Odkaz se v navigaci zobrazí i tak, pokud existuje alespoň jedna volná pozice.
+            i18n: duplicate
+          - label: Prázdný stav
+            name: empty
+            widget: object
+            i18n: true
+            fields:
+              - { label: Titulek, name: title, widget: string, i18n: true }
+              - { label: Text, name: text, widget: text, i18n: true }
+              - { label: Kontaktní e-mail, name: email, widget: string, i18n: duplicate }
+
+      - name: contact
+        label: Kontakt
+        file: /content/pages/{{locale}}/contact.json
+        i18n: true
+        fields:
+          - { label: Nadtitulek, name: kicker, widget: string, i18n: true }
+          - { label: Adresa (titulek), name: addressTitle, widget: string, i18n: true }
+          - label: Adresa (další řádky)
+            name: addressLines
+            widget: list
+            i18n: true
+            field: { label: Řádek, name: line, widget: string, i18n: true }
+          - { label: E-mail, name: email, widget: string, i18n: duplicate }
+          - { label: Telefon, name: phone, widget: string, i18n: duplicate }
+          - { label: Facebook URL, name: facebookUrl, widget: string, i18n: duplicate }
+          - { label: Facebook text, name: facebookLabel, widget: string, i18n: true }
+          - { label: Obrázek mapy, name: mapImage, widget: image, i18n: duplicate }
+          - { label: Alt text mapy, name: mapAlt, widget: string, i18n: true }
+          - label: Fakturační údaje
+            name: billing
+            widget: object
+            i18n: true
+            fields:
+              - { label: Nadpis, name: heading, widget: string, i18n: true }
+              - { label: Firma, name: company, widget: string, i18n: true }
+              - label: Řádky
+                name: lines
+                widget: list
+                i18n: true
+                field: { label: Řádek, name: line, widget: string, i18n: true }
