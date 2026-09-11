@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 326.89 326.89">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        isolation: isolate;
+      }
+
+      .cls-3 {
+        mix-blend-mode: multiply;
+      }
+
+      .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-5 {
+        fill: url(#Nepojmenovaný_přechod_6);
+      }
+
+      .cls-6 {
+        fill: url(#Nepojmenovaný_přechod_5);
+      }
+
+      .cls-7 {
+        fill: url(#Nepojmenovaný_přechod_4);
+      }
+
+      .cls-8 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <path class="cls-1" d="M264.9,236.62c14.87-20.57,23.63-45.85,23.63-73.17,0-69.09-56.01-125.09-125.09-125.09s-125.09,56-125.09,125.09,56.01,125.08,125.09,125.08c27.32,0,52.6-8.76,73.17-23.63l-36.15-36.15c-10.93,6.22-23.57,9.78-37.02,9.78-41.4,0-75.09-33.68-75.09-75.08s33.69-75.09,75.09-75.09,75.09,33.68,75.09,75.09c0,13.45-3.56,26.09-9.78,37.02l36.15,36.15Z"/>
+    </clipPath>
+    <radialGradient id="Nepojmenovaný_přechod_6" data-name="Nepojmenovaný přechod 6" cx="-277.82" cy="-1052.08" fx="-277.82" fy="-1052.08" r="1" gradientTransform="translate(-285628.72 117805.67) rotate(-127.14) scale(284.08 -284.08)" gradientUnits="userSpaceOnUse">
+      <stop offset=".51" stop-color="#64a180"/>
+      <stop offset="1" stop-color="#64a180" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="Nepojmenovaný_přechod_5" data-name="Nepojmenovaný přechod 5" cx="-269.5" cy="-1063.4" fx="-269.5" fy="-1063.4" r="1" gradientTransform="translate(97314.19 -208830.61) rotate(10.74) scale(210.03 -210.03)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fcb011"/>
+      <stop offset="1" stop-color="#fcb011" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="Nepojmenovaný_přechod_4" data-name="Nepojmenovaný přechod 4" cx="-277.01" cy="-1063.47" fx="-277.01" fy="-1063.47" r="1" gradientTransform="translate(-82379.94 -192061.6) rotate(-37.79) scale(190.4 -190.4)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#30353a"/>
+      <stop offset="1" stop-color="#30353a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g class="cls-2">
+    <g id="Vrstva_2" data-name="Vrstva 2">
+      <g id="Vrstva_1-2" data-name="Vrstva 1">
+        <g>
+          <path class="cls-4" d="M264.9,236.62c14.87-20.57,23.63-45.85,23.63-73.17,0-69.09-56.01-125.09-125.09-125.09s-125.09,56-125.09,125.09,56.01,125.08,125.09,125.08c27.32,0,52.6-8.76,73.17-23.63l-36.15-36.15c-10.93,6.22-23.57,9.78-37.02,9.78-41.4,0-75.09-33.68-75.09-75.08s33.69-75.09,75.09-75.09,75.09,33.68,75.09,75.09c0,13.45-3.56,26.09-9.78,37.02l36.15,36.15Z"/>
+          <g class="cls-8">
+            <g>
+              <path class="cls-5" d="M294.24,326.89L0,294.24,32.65,0l294.24,32.65-32.65,294.24Z"/>
+              <path class="cls-6" d="M294.24,326.89L0,294.24,32.65,0l294.24,32.65-32.65,294.24Z"/>
+              <g class="cls-3">
+                <path class="cls-7" d="M294.24,326.89L0,294.24,32.65,0l294.24,32.65-32.65,294.24Z"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
